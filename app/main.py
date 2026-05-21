@@ -1,15 +1,27 @@
 from fastapi import FastAPI
 from app.routers import health_router
+from app.database import engine, Base
+import os
+
+
+if os.getenv("CREATE_TABLES", "false").lower() == "true":
+    Base.metadata.create_all(bind=engine)
+    print("Tables created (development mode)")
 
 app = FastAPI(
-    title="My API",
+    title="Personal Finance API",
     description="RESTful API finances",
     version="1.0.0"
 )
 
 app.include_router(health_router)
 
-
 @app.get("/")
 async def root():
-    return {"message": "Welcome to My API", "docs_url": "/docs"}
+    return {
+        "message": "Welcome to Personal Finance API",
+        "docs_url": "/docs",
+        "redoc_url": "/redoc",
+        "health_check": "/health",
+        "db_status": "/health/db"
+    }
