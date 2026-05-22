@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.routers import health_router
+from app.routers import health_router, users_router, import_logs_router
 from app.database import engine, Base
 import os
 
@@ -15,6 +15,8 @@ app = FastAPI(
 )
 
 app.include_router(health_router)
+app.include_router(users_router)
+app.include_router(import_logs_router)
 
 @app.get("/")
 async def root():
