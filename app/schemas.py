@@ -150,3 +150,31 @@ class ImportStatsResponse(BaseModel):
     avg_rows_processed: Optional[float]
     avg_rows_succeeded: Optional[float]
     avg_success_rate: Optional[float]
+
+
+class AccountBalanceResponse(BaseModel):
+    balance_calc: Decimal
+    currency: str
+    last_transaction_date: Optional[date]
+
+
+class TransferEligibilityResponse(BaseModel):
+    is_possible: bool
+    fee: Decimal
+    message: str
+
+
+class TransferRequest(BaseModel):
+    from_account_id: UUID
+    to_account_id: UUID
+    amount: Decimal = Field(..., gt=0, description="Amount to transfer")
+    description: str = Field("Money transfer", description="Transfer description")
+
+
+class TransferResponse(BaseModel):
+    success: bool
+    message: str
+    from_account_id: UUID
+    to_account_id: UUID
+    amount: Decimal
+    fee: Optional[Decimal] = 0

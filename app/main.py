@@ -5,7 +5,8 @@ from app.routers import (
     import_logs_router,
     categories_router,
     views_router,
-    reports_router
+    reports_router,
+    functions_router
 )
 from app.database import engine, Base
 import os
@@ -27,6 +28,7 @@ app.include_router(import_logs_router)
 app.include_router(categories_router)
 app.include_router(views_router)
 app.include_router(reports_router)
+app.include_router(functions_router)
 
 @app.get("/")
 async def root():
