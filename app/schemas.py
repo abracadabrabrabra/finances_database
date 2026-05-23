@@ -67,3 +67,86 @@ class ImportLogResponse(ImportLogBase):
 
     class Config:
         from_attributes = True
+
+
+class CategoryBase(BaseModel):
+    name: str = Field(..., max_length=100, description="Category name")
+    description: Optional[str] = Field(None, description="Category description")
+
+    @field_validator("name")
+    @classmethod
+    def name_not_empty(cls, v: str) -> str:
+        if not v or not v.strip():
+            raise ValueError("Name cannot be empty")
+        return v.strip()
+
+
+class CategoryCreate(CategoryBase):
+    pass  #uid from path
+
+
+class CategoryUpdate(BaseModel):
+    name: Optional[str] = Field(None, max_length=100)
+    description: Optional[str] = None
+
+    @field_validator("name")
+    @classmethod
+    def name_not_empty(cls, v: Optional[str]) -> Optional[str]:
+        if v is not None and (not v or not v.strip()):
+            raise ValueError("Name cannot be empty")
+        return v.strip() if v else v
+
+
+class CategoryResponse(CategoryBase):
+    id: UUID
+    user_id: UUID
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+class UserFinancialSummaryResponse(BaseModel):
+    id: UUID
+    email: str
+    full_name: Optional[str]
+    total_accounts: int
+    total_transactions: int
+    total_income: Decimal
+    total_expense: Decimal
+    net_savings: Decimal
+
+    class Config:
+        from_attributes = True
+
+
+class GoalProgressResponse(BaseModel):
+    goal_name: str
+    email: str
+    account_name: str
+    target_amount: Decimal
+    saved_amount: Decimal
+    progress_percent: float
+    deadline: Optional[date]
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+class TransactionsPerDayResponse(BaseModel):
+    transaction_date: date
+    transactions_per_day: int
+
+
+class UserTransactionStatsResponse(BaseModel):
+    email: str
+    first_transaction: Optional[date]
+    last_transaction: Optional[date]
+    smallest_amount: Optional[Decimal]
+    largest_amount: Optional[Decimal]
+
+
+class ImportStatsResponse(BaseModel):
+    avg_rows_processed: Optional[float]
+    avg_rows_succeeded: Optional[float]
+    avg_success_rate: Optional[float]
